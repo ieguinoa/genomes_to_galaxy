@@ -20,3 +20,6 @@ By default, the full GFF and a representative_tx (longest tx only) are installed
 Several GFF files can be listed in the input file for the same  (e.g subset of genes, extra "low confidence" genes, etc)
 As long as the genome build id triad is the same, then the different GFFs will be taken as extra annotations from the same build
 
+
+For the moment the genomes, annotations and preprocessed files used as input for the data managers are all downloaded to (created in) directories that should be accessible by the Galaxy server. The user can choose to copy or symlinking these input files when running the data managers (parameter -s). 
+In the future there will be an extra option that first uploads the files to a history and runs the data managers from these so there will be no need to have the preprocessing files in a Galaxy accessible directory.

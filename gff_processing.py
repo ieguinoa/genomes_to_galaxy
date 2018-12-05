@@ -13,7 +13,6 @@ gene_features_names=['gene','tRNA_gene','ncRNA_gene','lincRNA_gene','miRNA_gene'
 
 
 
-def process_gff_function(gff_file,tx2gene_out,longest_tx_gff_out):
 
 def get_longest_transcripts_only(db,out_gff_path):
     #out_gff = open(sys.argv[2], 'w')
@@ -64,7 +63,7 @@ def process_gff_function(gff_file,tx2gene_out,longest_tx_gff_out):
     db = gffutils.create_db(gff_file, 'test.db', force=True, merge_strategy='create_unique')
     db = gffutils.FeatureDB('test.db', keep_order=True)  
     get_tx2gene_table(db,tx2gene_out)
-    get_longest_transcripts_only(db,)
+    get_longest_transcripts_only(db,longest_tx_gff_out)
 
 
 

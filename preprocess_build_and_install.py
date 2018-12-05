@@ -61,10 +61,25 @@ def sanitize_names(name_raw):
 
 
 def main():
-    genome_builds_file=open(sys.argv[1])
-    base_build_path=sys.argv[2]
+    # Parse Command Line
+    wparser = argparse.ArgumentParser()
+    parser.add_argument( '-i','--genomes_input', dest='genomes_table', action='store', type=str, default=None )
+    parser.add_argument( '-b', '--base_dir', dest='base_dir', action='store', type=str, help='base dir to save genomes and processed files' )
+    parser.add_argument( '-s', '--use_symlink', dest='use_symlink', action='store', type=str,default=True, help='Boolean, whether to symlink the files to Galaxy dm-dir or make a copy' )
+    options = parser.parse_args()
+
+    base_dir = options.base_dir
+    genomes_table_path=options.genomes_table 
+    #open the table file
+    genomes_table_file=open(genomes_table_path)
     
-    
+    #create yaml files to print entries 
+    #genome entries, creates dbkey, load genome and index based on genome only
+    genomes_yaml=open(os.path.join(base_dir,'genomes.yaml'),'w')    #Fields: dbkey, genome_id (fasta entry), fasta_path
+    transcripts_yaml=open(os.path.join(base_dir,'transcripts.yaml'),'w') #Fields: dbkey, transcriptome_id, transcriptome_name, transcripts_path
+    annotation_yaml=open(os.path.join(base_dir,'annotations.yaml'),'w') # Fields: dbkey, annotation_id, annotation_name, annotation_path
+        
+
     #skip header
     genome_builds_file.readline()
     
@@ -85,12 +100,12 @@ def main():
     builds_gff_dict={}
     
     
-    for line in genome_builds_file.readlines():
+    for line in genomes_table_file.readlines():
         build_abbv,gff_desc,species,strain,source,version,info_url,fasta_uri,gff_uri=line.split('\t')
         build_id=sanitize_name(species+'_'+strain+'_'+version)
         if build_id not in builds_gff_dict:
             builds_gff_dict[]
-            build_dir=os.path.join(base_path,build_id)
+            build_dir=os.path.join(base_dir,build_id)
             os.mkdir(build_dir)
             out_genome_fasta=os.path.join(build_dir,build_id.genome.fa)
             if not get_file(fasta_uri,out_genome_fasta):  
@@ -125,7 +140,7 @@ def main():
         # Get tx2gene and representative_tx_gff
         print("------------------------")
         print("Processing the annotation file: extracting representativve (longest) transcript per gene and transcript to to gene table:")
-        process_gff_function(out_gff_path, tx2gene_out_path, longest_tx_out_path)
+        #process_gff_function(out_gff_path, tx2gene_out_path, longest_tx_out_path)
     
         
         #print the gff entry and the transcriptome entry in the corresponding .yaml files
