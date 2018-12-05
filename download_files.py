@@ -1,3 +1,34 @@
+from io import BytesIO as StringIO
+from io import UnsupportedOperation
+from urllib.request import urlopen
+import tempfile
+import bz2
+import gzip
+import optparse
+import os
+import shutil
+import sys
+import tarfile
+import tempfile
+import zipfile
+from ftplib import FTP
+
+
+
+CHUNK_SIZE = 2 ** 20 # 1mb
+
+def _download_file(start, fh):
+    tmp = tempfile.NamedTemporaryFile()
+    tmp.write(start)
+    while True:
+        data = fh.read(CHUNK_SIZE)
+        if data:
+            tmp.write(data)
+        else:
+            break
+    tmp.flush()
+    tmp.seek(0)
+    return tmp
 
 
 def _get_stream_readers_for_tar(fh, tmp_dir):

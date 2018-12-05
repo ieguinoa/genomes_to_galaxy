@@ -2,7 +2,6 @@
 import gffutils
 import sys
 import os
-import tempfile
 
 
 
@@ -39,8 +38,8 @@ def get_longest_transcripts_only(db,out_gff_path):
     	     longest_RNA.attributes['gene_id']=gene_id
     	     out_gff.write(longest_RNA+'\n')
     	     for exon in db.children(longest_RNA, featuretype='exon', order_by='start'):  
-    			 exon.attributes['gene_id']=gene_id
-    			 out_gff.write(exon+'\n')
+                 exon.attributes['gene_id']=gene_id
+                 out_gff.write(exon+'\n')
          #else:
          #    print gene_id[0] + '\tNo RNA found'
 
@@ -51,15 +50,15 @@ def get_tx2gene_table(db,filename):
     for gene in db.features_of_type(gene_features_names):
         for child in db.children(gene, order_by='start'):
 #           if child.featuretype=='mRNA' or child.featuretype=='rRNA' or child.featuretype=='lnc_RNA':
-	    if child.featuretype in tx_features_names:
+            if child.featuretype in tx_features_names:
             	out_file.write(child.id + '\t' + gene.id + '\n')
 
 
 
-
-def process_gff_function(gff_file,tx2gene_out,longest_tx_gff_out):
-    db = gffutils.create_db(gff_file, 'test.db', force=True, merge_strategy='create_unique')
-    db = gffutils.FeatureDB('test.db', keep_order=True)  
+def process_gff_function(db_name,gff_file,tx2gene_out,longest_tx_gff_out):
+    if not os.path.isfile(db_name):
+        db = gffutils.create_db(gff_file, db_name, force=True, merge_strategy='create_unique')
+    db = gffutils.FeatureDB(db_name, keep_order=True)  
     get_tx2gene_table(db,tx2gene_out)
     get_longest_transcripts_only(db,longest_tx_gff_out)
 
