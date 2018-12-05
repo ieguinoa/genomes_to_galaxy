@@ -3,8 +3,6 @@ import gffutils
 import sys
 import os
 import tempfile
-import optparse
-import subprocess
 
 
 
