@@ -57,7 +57,7 @@ def get_tx2gene_table(db,filename):
 
 def process_gff_function(db_name,gff_file,tx2gene_out,longest_tx_gff_out):
     if not os.path.isfile(db_name):
-        db = gffutils.create_db(gff_file, db_name, force=True, merge_strategy='create_unique')
+        db = gffutils.create_db(gff_file, db_name, force=True, merge_strategy='create_unique',disable_infer_transcripts=True)
     db = gffutils.FeatureDB(db_name, keep_order=True)  
     get_tx2gene_table(db,tx2gene_out)
     get_longest_transcripts_only(db,longest_tx_gff_out)

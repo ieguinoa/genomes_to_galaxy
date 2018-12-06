@@ -75,6 +75,7 @@ def get_file(uri, out_path):
         _stream_to_file(file_stream,out_path)
     else:
         # it may be a file path
+        print('its a file path')
         if (os.path.exists(uri)): 
             ## its a file path
             #assume it is not compressed and just make a ln
@@ -138,11 +139,19 @@ def main():
     
     
     for line in genomes_table_file.readlines():
+        if line.startswith('#'):
+            continue
         build_abbv,gff_desc,species,strain,source,version,info_url,fasta_uri,gff_uri=line.split('\t')
         build_name=species+' '+strain+' '+version
         build_id=sanitize_name(build_name)
+        if (gff_desc!=''):
+            gff_id=build_id+'_'+sanitize_name(gff_desc)
+        else:
+            gff_id=build_id+'_main'
+        print("Processing " + gff_id)
         if build_id not in builds_gff_dict:   ## genome not yet included
             builds_gff_dict[build_id]=[]   # add the build_id key
+            print(build_id)
             build_dir=os.path.join(base_dir,build_id)
             if not os.path.isdir(build_dir):
                 os.mkdir(build_dir)
@@ -170,16 +179,14 @@ def main():
                 } )
             
         # Retrieve GFF
-        if (gff_desc!=''):
-            gff_id=build_id+'_'+sanitize_name(gff_desc) 
-        else:
-            gff_id=build_id+'_main_gff'
         if gff_id not in builds_gff_dict[build_id]:   # new annotation for this build, add it to the list and continue with processing
+            print(gff_id)
             builds_gff_dict[build_id].append(gff_id) 
             out_gff_path=os.path.join(build_dir,gff_id+'.gff')    
             if not os.path.isfile(out_gff_path): ## check that the file does not exists (assume that if exists then it is the same )
                 if not get_file(gff_uri,out_gff_path):
-                    return 'The gff file could not be downloaded/copied' 
+                    print('The gff file could not be downloaded/copied') 
+                    sys.exit() 
                 else:
                     print("The GFF was already located in the correct place, no download/linking required")
     
@@ -198,7 +205,8 @@ def main():
                 if return_code:
                     print("Error extracting transcript sequences", file=sys.stderr)
                     sys.exit( return_code )
-        
+            else:
+                print("Transcriptome was already created for build-annotation "+ gff_id  )  
         
             # Get tx2gene and representative_tx_gff
             tx2gene_out_path=os.path.join(build_dir,gff_id+'_tx2gene.tab')
@@ -207,7 +215,7 @@ def main():
                 print("------------------------")
                 print("Processing the annotation file: extracting representativve (longest) transcript per gene and transcript to to gene table:")
                 db_path=os.path.join(build_dir,gff_id)
-                process_gff_function(db_path,out_gff_path, tx2gene_out_path, longest_tx_out_path)
+                #process_gff_function(db_path,out_gff_path, tx2gene_out_path, longest_tx_out_path)
         
             
             #add the gff+transcriptome entry in the list to create .yaml files
@@ -226,14 +234,16 @@ def main():
   
 
   
-    #create yaml files and print entries 
+    #create yaml files and print entries
+    conf_dir=os.path.join(base_dir,'ephemeris')
+    if not os.path.isdir(conf_dir):
+        os.mkdir(conf_dir)
     #genome entries, creates dbkey, load genome and index based on genome only
-    #genomes_yaml=open(os.path.join(base_dir,'genomes.yaml'),'w')    #Fields: dbkey, genome_id (fasta entry), fasta_path
-    #genomes_yaml.write(Environment().from_string(genomes_j2).render(builds=genomes_list))
+    genomes_yaml=open(os.path.join(conf_dir,'genomes.yaml'),'w')    #Fields: dbkey, genome_id (fasta entry), fasta_path
+    genomes_yaml.write(Environment().from_string(genomes_j2).render(builds=genomes_list))
 
-    #annotation_and_transcripts_yaml=open(os.path.join(base_dir,'annotation_and_transcripts.yaml'),'w') #Fields: dbkey, transcriptome_id, transcriptome_name, transcripts_path, annotation_id, annotation_name, annotation_path
-    #annotation_and_transcripts_yaml.write(Environment().from_string(annotation_tx_j2).render(builds=gff_transcriptome_list))
-
+    annotation_and_transcripts_yaml=open(os.path.join(conf_dir,'annotation_and_transcripts.yaml'),'w') #Fields: dbkey, transcriptome_id, transcriptome_name, transcripts_path, annotation_id, annotation_name, annotation_path
+    annotation_and_transcripts_yaml.write(Environment().from_string(annotation_tx_j2).render(builds=gff_transcriptome_list))
 
 
 if __name__ == "__main__":
