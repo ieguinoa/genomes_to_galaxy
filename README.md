@@ -2,31 +2,31 @@
 Scripts to preprocess genomes+annotation, automatically load them to a Galaxy instance and build the corresponding indexes. This repo also contains yaml files to directly install plants genomes used at PSB-VIB, complementing the genome collection available from PLAZA (https://github.com/ieguinoa/galaxy_data_management)
 
 # Preprocessing scripts to install new genome builds into Galaxy:
-The
+install_genomes.sh is the wrapper script for all the steps.
 The parameters are:
 
 -i Path to genomes table: This is the information about the genomes that need to be installed. It's important to follow the formatting of this table. The columns are:
 
-Genome_build_abbreviation
-GFF description
 Species
 Strain 
-Source 
-Version        
-Info URL
-FASTA URL
-GFF URL 
+Genome Version        
+Annotation version/drescription (can be left blank and it will be labelled as 'reference')
+Genome Fasta URL
+Annotation (GFF/GTF) URL 
 
--s [True | False]: Whether the data manager inputs should be symlinked (True=default) when calling to the data managers, or if the data managers should copy (False) the files to the corresponding dm data directory in the Galaxy server.
+A sample table with some genomes can be found in genomes_sample.tab
 
 -b base_path: This is the path in the local directory where the preprocessing should be done: 
 
+-s Use this parameter (with no value) to run the data managers in link mode. That is, the base_path is assumed to be found in the Galaxy server and the input files (genome and trancriptome fasta, gff files, etc) are only linked by the data manger to the configured data manager data directory.
+
+NOT IMMPLEMENTED
 -r remote_path (OPTIONAL): This is the remote equivalent in the Galaxy server of the base_path, in case it is mounted in a different base path. Default value is = base_path
 
 
 
 ## General information about the preprocessing
-A genome build is defined by a triad composed of Species+Strain+Version  
+A genome build is defined by a triad composed of Species+Strain+Version. 
 By default, the full GFF and a representative_tx (longest tx only) are installed for each GFF entry/
 Several GFF files can be listed in the input file for the same  (e.g subset of genes, extra "low confidence" genes, etc)
 As long as the genome build id triad is the same, then the different GFFs will be taken as extra annotations from the same build
