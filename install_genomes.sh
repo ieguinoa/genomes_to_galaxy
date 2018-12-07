@@ -5,11 +5,11 @@ genomes_dm_symlink=genomes_dm_symlink.yaml
 genomes_dm_cp=genomes_dm_cp.yaml
 
 annotation_dm_symlink=annotation_dm_symlink.yaml
-annotation_dm_copy=annotation_dm_cp.yaml
+annotation_dm_cp=annotation_dm_cp.yaml
 
 
 PARAMS=""
-symLink=false
+link_files=false
 
 while (( "$#" )); do
   case "$1" in
@@ -31,7 +31,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -s)
-      symLink=true
+      link_files=true
       shift
       ;;
     --) # end argument parsing
@@ -52,41 +52,37 @@ done
 
 
 ## preprocess(if not done before) and create the installation .yaml files
-python3 /ngsprojects/ngsdb/genomeInformation/test_preprocessing_scripts/preprocess_build_and_install.py $PARAMS
+python /ngsprojects/ngsdb/genomeInformation/test_preprocessing_scripts/preprocess_build_and_install.py $PARAMS
 
 
 
 
 ### Install the resulting files
-
 conf_files_dir=$base_path/ephemeris
 for conf_file in `find $conf_files_dir -name "*genomes.yaml" -type f`; do  
-    if [ "$symLink" == true ]
+    if [ "$link_files" == true ]
     then
-        echo "symblinking...."
-        cat $genomes_dm_symlink >> conf_file
+        echo >> $conf_file
+        cat $genomes_dm_symlink >> $conf_file
     else
-        echo "not symlinking"
-        cat $genomes_dm_cp >> conf_file
+        echo >> $conf_file
+        cat $genomes_dm_cp >> $conf_file
     fi 
     # install genomes
-    #run-data-managers --config $conf_file -g $GALAXY_URL -a $API_KEY
+    run-data-managers --config $conf_file -g $GALAXY_URL -a $API_KEY
 done
 
 
-
-for conf_file in `find $conf_files_dir -name "*annotation_and_transcripts.yaml" -type f`; do
-    if [ "$symLink" == true ]
+for annot_conf_file in `find $conf_files_dir -name "*annotation_and_transcripts.yaml" -type f`; do
+    if [ "$link_files" == true ]
     then
-        echo "symblinking...."
-        cat $annotation_dm_symlink >> conf_file
+        echo >> $annot_conf_file
+        cat $annotation_dm_symlink >> $annot_conf_file
     else
-        echo "not symlinking"
-        cat $annotation_dm_cp >> conf_file
+        echo >> $annot_conf_file
+        cat $annotation_dm_cp >> $annot_conf_file
     fi
     # install genomes
-    #run-data-managers --config $conf_file -g $GALAXY_URL -a $API_KEY
+    run-data-managers --config $conf_file -g $GALAXY_URL -a $API_KEY
 done
-
-
 

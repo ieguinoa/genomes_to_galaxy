@@ -1,7 +1,7 @@
 # genomes_to_galaxy
 Scripts to preprocess genomes+annotation, automatically load them to a Galaxy instance and build the corresponding indexes. This repo also contains yaml files to directly install plants genomes used at PSB-VIB, complementing the genome collection available from PLAZA (https://github.com/ieguinoa/galaxy_data_management)
 
-# Preprocessing scripts to install new genome builds into Galaxy:
+
 install_genomes.sh is the wrapper script for all the steps.
 The parameters are:
 
@@ -18,12 +18,17 @@ A sample table with some genomes can be found in genomes_sample.tab
 
 -b base_path: This is the path in the local directory where the preprocessing should be done: 
 
--s Use this parameter (with no value) to run the data managers in link mode. That is, the base_path is assumed to be found in the Galaxy server and the input files (genome and trancriptome fasta, gff files, etc) are only linked by the data manger to the configured data manager data directory.
+IMPORTANT: the base path must be accessible from the Galaxy server so that all data managers can read the input files created during the preprocessing.
 
-NOT IMMPLEMENTED
+NOT IMPLEMENTED YET
+-s Use this parameter (with no value) to run the data managers in link mode. Since the base_path must be accessible from the Galaxy server then it could be better to benefit from it and ask the data managers to only create a symbolic link to the input data. 
+
+NOT IMPLEMENTED YET
 -r remote_path (OPTIONAL): This is the remote equivalent in the Galaxy server of the base_path, in case it is mounted in a different base path. Default value is = base_path
 
 
+-g GALAXY_SERVER: URL to connect to the Galaxy server. If not set by parameter, it can be set in a global var $GALAXY_SERVER
+-a API_KEY to run data managers. If not set by parameter, it can be set in a global var $API_KEY
 
 ## General information about the preprocessing
 A genome build is defined by a triad composed of Species+Strain+Version. 

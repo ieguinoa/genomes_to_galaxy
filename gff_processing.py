@@ -34,12 +34,12 @@ def get_longest_transcripts_only(db,out_gff_path):
          # it could happen that gene is used to define structures other than the classic gene-mRNA-exons. For example  gene-tRNAs
          # in this case the previous loop wont catch any longest mRNA (the gene has no mRNA childs)   
          if longest_RNA != 'None':
-    	     out_gff.write(gene+'\n')  # print the feature with the modified values
+    	     out_gff.write(str(gene)+'\n')  # print the feature with the modified values
     	     longest_RNA.attributes['gene_id']=gene_id
-    	     out_gff.write(longest_RNA+'\n')
+    	     out_gff.write(str(longest_RNA)+'\n')
     	     for exon in db.children(longest_RNA, featuretype='exon', order_by='start'):  
                  exon.attributes['gene_id']=gene_id
-                 out_gff.write(exon+'\n')
+                 out_gff.write(str(exon)+'\n')
          #else:
          #    print gene_id[0] + '\tNo RNA found'
 

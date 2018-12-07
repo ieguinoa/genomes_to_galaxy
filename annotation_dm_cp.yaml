@@ -1,0 +1,83 @@
+data_managers:
+    ## Load the transcriptome fasta
+    - id: toolshed.g2.bx.psu.edu/repos/devteam/data_manager_fetch_genome_dbkeys_all_fasta/data_manager_fetch_genome_all_fasta_dbkey/0.0.2
+      params:
+        - 'dbkey_source|dbkey_source_selector': 'existing'
+        - 'dbkey_source|dbkey': '{{ item.dbkey }}'
+        - 'reference_source|reference_source_selector': 'directory'
+        - 'reference_source|fasta_filename': '{{ item.transcriptome_uri }}'
+        - 'reference_source|create_symlink': 'copy_file'
+        - 'sequence_name': '{{ item.transcriptome_name }}'
+        - 'sequence_id': '{{ item.transcriptome_id }}'
+        - 'sorting|sorting_selector': 'as_is'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - all_fasta
+
+    # Build Salmon index using the transcriptome fasta
+    - id: salmon_index_builder
+      params:
+        - 'all_fasta_source': '{{ item.transcriptome_id }}'
+        - 'sequence_name': '{{ item.transcriptome_name }}'
+        - 'sequence_id': '{{ item.transcriptome_id }}'
+        - 'kmer_size': '31'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - salmon_indexes
+
+    # Build kallisto index using the transcriptome fasta
+    - id: kallisto_index_builder
+      params:
+        - 'all_fasta_source': '{{ item.transcriptome_id }}'
+        - 'sequence_name': '{{ item.transcriptome_name }}'
+        - 'sequence_id': '{{ item.transcriptome_id }}'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - kallisto_indexes
+
+
+
+
+
+
+
+
+
+
+    ## Load gff_all_tx_all_features
+    - id: data_manager_fetch_gff
+      params:
+        - 'dbkey': '{{ item.genome_id }}'
+        - 'reference_source|reference_source_selector': 'url'
+        - 'reference_source|user_url': '{{ item.gff_all_tx_all_features }}'
+        - 'sequence_name': '{{ item.name }} - All transcripts - All features'
+        - 'sequence_id': '{{ item.build_id }}_gff_all_tx_all_features'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - all_gff
+
+
+    ## Load gff_rep_tx_all_features
+    - id: data_manager_fetch_gff
+      params:
+        - 'dbkey': '{{ item.genome_id }}'
+        - 'reference_source|reference_source_selector': 'url'
+        - 'reference_source|user_url': '{{ item.gff_selected_tx_all_features }}'
+        - 'sequence_name': '{{ item.name }} - Selected transcripts - All features'
+        - 'sequence_id': '{{ item.build_id }}_gff_selected_tx_all_features'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - all_gff
+
+    ## Load tx2gene table
+    - id: data_manager_fetch_tx2gene
+      params:
+        - 'dbkey': '{{ item.genome_id }}'
+        - 'file_type' : 'tx2gene'
+        - 'reference_source|reference_source_selector': 'url'
+        - 'reference_source|user_url': '{{ item.all_tx_tx2gene }}'
+        - 'sequence_name': '{{ item.name }}'
+        - 'sequence_id': '{{ item.build_id }}_all_tx_tx2gene'
+      items: "{{ genomes }}"
+      data_table_reload:
+        - tx2gene

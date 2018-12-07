@@ -28,13 +28,17 @@ genomes_j2 = """genomes:{% for build in builds %}
 #Fields: dbkey, transcriptome_id, transcriptome_name, transcripts_path, annotation_id, annotation_name, annotation_path
 annotation_tx_j2 = """genomes:{% for build in builds %}
     - dbkey: {{build.dbkey}}
-      transcriptome_id: {{build.genome_id}}
-      transcriptome_name: {{build.name}}
-      transcriptome_uri: {{build.genome_uri}} 
-      annotation_id: {{build.genome_id}}
-      annotation_name: {{build.name}}
-      annotation_uri: {{build.genome_uri}}
+      transcriptome_id: {{build.transcriptome_id}}
+      transcriptome_name: {{build.transcriptome_name}}
+      transcriptome_uri: {{build.transcriptome_uri}} 
+      annotation_id: {{build.annotation_id}}
+      annotation_name: {{build.annotation_name}}
+      annotation_uri: {{build.annotation_uri}}
+      representative_tx_uri: {{build.representative_tx_uri}}
+      tx2gene_uri: {{ build.tx2gene_uri}}
       {% endfor %}"""
+
+
 
 
 def uri_validator(x):
@@ -66,13 +70,14 @@ def get_file(uri, out_path):
     print("Downloading file to "+ out_path)
     tmp_dir = tempfile.mkdtemp()   #create tmp file in case the genome needs to be uncompressed
     if(uri_validator(uri)):  # its a URL
-        print(uri_validator(uri))
+        #print(uri_validator(uri))
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
         #urllib.request.urlretrieve(uri, out_path)
-        file_stream=get_stream_reader(urlopen(uri,context=ctx), tmp_dir)
+        file_stream=get_stream_reader(urlopen(uri,context=ctx, timeout=15), tmp_dir)
         _stream_to_file(file_stream,out_path)
+        return True
     else:
         # it may be a file path
         print('its a file path')
@@ -123,17 +128,13 @@ def main():
     genomes_table_file.readline()
     
     # Columns in the file must be (see README):
-    # Genome_build_abbreviation
-    # GFF description (optional)
-    # Species
-    # Strain / Accession / Cultivar	
-    #Source	
-    #Version	
-    #Info URL
-    #FASTA URL
-    #GFF URL	
-    
-    
+    #Species
+    #Strain
+    #Genome Version
+    #Annotation version/drescription (can be left blank and it will be labelled as 'reference')
+    #Genome Fasta URL
+    #Annotation (GFF/GTF) URL
+
     
     ## builds dictionary
     builds_gff_dict={}
@@ -142,13 +143,13 @@ def main():
     for line in genomes_table_file.readlines():
         if line.startswith('#'):
             continue
-        build_abbv,gff_desc,species,strain,source,version,info_url,fasta_uri,gff_uri=line.split('\t')
+        species,strain,version,gff_desc,fasta_uri,gff_uri=line.split('\t')
         build_name=species+' '+strain+' '+version
         build_id=sanitize_name(build_name)
         if (gff_desc!=''):
             gff_id=build_id+'_'+sanitize_name(gff_desc)
         else:
-            gff_id=build_id+'_main'
+            gff_id=build_id+'_reference'
         print("Processing " + gff_id)
         if build_id not in builds_gff_dict:   ## genome not yet included
             builds_gff_dict[build_id]=[]   # add the build_id key
@@ -191,7 +192,7 @@ def main():
                 else:
                     print("Download/copy succesful")
             else:
-                print("The GFF was already located in the correct place, no download/linking required")
+                print("The GFF was already located in the correct place, no download/linking required.....skipping")
     
     
     
@@ -209,7 +210,7 @@ def main():
                     print("Error extracting transcript sequences", file=sys.stderr)
                     sys.exit( return_code )
             else:
-                print("Transcriptome was already created for build-annotation "+ gff_id  )  
+                print("Transcriptome was already created for build-annotation ... skipping"+ gff_id  )  
         
             # Get tx2gene and representative_tx_gff
             tx2gene_out_path=os.path.join(build_dir,gff_id+'_tx2gene.tab')
@@ -224,12 +225,14 @@ def main():
             #add the gff+transcriptome entry in the list to create .yaml files
             gff_transcriptome_list.append( { \
                     'dbkey': build_id,\
-                    'transcriptome_id': gid,\
-                    'transcriptome_name': build_name,\
-                    'transcriptome_uri': out_genome_fasta,\
-                    'annotation_id': gid,\
+                    'transcriptome_id': gff_id + '_transcripts',\
+                    'transcriptome_name': build_name + ' - Transcripts',\
+                    'transcriptome_uri': transcriptome_out,\
+                    'annotation_id': gff_id,\
                     'annotation_name': build_name,\
-                    'annotation_uri': out_genome_fasta,\
+                    'annotation_uri': out_gff_path,\
+                    'representative_tx_uri': longest_tx_out_path,\
+                    'tx2gene_uri': tx2gene_out_path,\
                     } )
 
         else:    ## gff id is already stored in the build lists -> duplicated entry in the input table
