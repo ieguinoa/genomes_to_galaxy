@@ -1,6 +1,3 @@
-#headers
-#Secale cereale	Lo7	IPK	v2	http://doi.ipk-gatersleben.de/DOI/33470d95-b8a0-4e78-9128-fa14888ac51c/9c3b57cd-eb35-4e7d-9427-8294f1675fcc/2/ZIP	https://webblast.ipk-gatersleben.de/ryeselect/downloads/hcs1-3_transcripts_MIPS_v3_final_mar14.gff3.gz
+#Species	Strain	Genome version	Annotation version	Genome FASTA URI	Annotation FASTA URI
 Solanum lycopersicum	Heinz 1706	SL3.0	ITAG3.20	ftp://ftp.solgenomics.net/tomato_genome/assembly/build_3.00/S_lycopersicum_chromosomes.3.00.fa	ftp://ftp.solgenomics.net/tomato_genome/annotation/ITAG3.2_release/ITAG3.2_gene_models.gff
 Zea mays	Mo17	REFERENCE-CAU-1.0		ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/185/045/GCA_003185045.1_Zm-Mo17-REFERENCE-CAU-1.0/GCA_003185045.1_Zm-Mo17-REFERENCE-CAU-1.0_genomic.fna.gz	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/185/045/GCA_003185045.1_Zm-Mo17-REFERENCE-CAU-1.0/GCA_003185045.1_Zm-Mo17-REFERENCE-CAU-1.0_genomic.gff.gz
-#Brassica napus	Darmor-bzh	ENSEMBL	AST_PRJEB5043_v1	41	ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/brassica_napus/dna/Brassica_napus.AST_PRJEB5043_v1.dna.toplevel.fa.gz	ftp://ftp.ensemblgenomes.org/pub/plants/release-41/gff3/brassica_napus/Brassica_napus.AST_PRJEB5043_v1.41.gff3.gz
-#Oryza sativa japonica	Nipponbare	ENSEMBL	IRGSP-1.0	41	ftp://ftp.ensemblgenomes.org/pub/plants/release-41/fasta/oryza_sativa/dna/Oryza_sativa.IRGSP-1.0.dna.toplevel.fa.gz	ftp://ftp.ensemblgenomes.org/pub/plants/release-41/gff3/oryza_sativa/Oryza_sativa.IRGSP-1.0.41.chr.gff3.gz
