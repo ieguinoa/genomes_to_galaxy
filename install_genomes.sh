@@ -82,7 +82,7 @@ for annot_conf_file in `find $conf_files_dir -name "*annotation_and_transcripts.
         echo >> $annot_conf_file
         cat $annotation_dm_cp >> $annot_conf_file
     fi
-    # install genomes
+    # install annotations
     run-data-managers --config $conf_file -g $GALAXY_URL -a $API_KEY
 done
 
