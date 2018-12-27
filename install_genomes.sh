@@ -52,7 +52,7 @@ done
 
 
 ## preprocess(if not done before) and create the installation .yaml files
-python /ngsprojects/ngsdb/genomeInformation/test_preprocessing_scripts/preprocess_build_and_install.py $PARAMS
+python preprocess_build_and_install.py $PARAMS
 
 
 
