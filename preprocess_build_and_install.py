@@ -84,9 +84,10 @@ def get_file(uri, out_path):
         if (os.path.exists(uri)): 
             ## its a file path
             #assume it is not compressed and just make a ln
-            os.symlink(out_path,uri) 
+            os.symlink(uri,out_path) 
             # i can also make a stream to the new location
             #file_stream=get_stream_reader(open(filename, 'rb'), tmp_dir)
+            return True
         else:
             return False
     if tmp_dir and os.path.exists(tmp_dir):
