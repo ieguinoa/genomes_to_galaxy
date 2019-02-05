@@ -16,7 +16,11 @@ def get_longest_transcripts_only(db,out_gff_path):
     out_gff = open(out_gff_path, 'w')
     # iterate over all features
     for gene in db.features_of_type(gene_features_names):
-         gene_id=gene.attributes['ID']
+         if 'ID' in gene.attributes.keys():
+             print('it has ID attribute')
+             gene_id=gene.attributes['ID']
+         else:
+             gene_id=gene.attributes['gene_id']
          gene.attributes['gene_id']=gene_id
          #del feature['ID']
          # iterate over childs to add gene_id
