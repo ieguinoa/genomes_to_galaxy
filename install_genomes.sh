@@ -18,7 +18,7 @@ while (( "$#" )); do
       shift 2
       ;;
     -g|--galaxy-server)
-      GALAXY_SERVER=$2
+      GALAXY_URL=$2
       shift 2
       ;;
     -i|--builds-table)
