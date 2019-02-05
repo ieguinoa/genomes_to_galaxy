@@ -27,7 +27,7 @@ NOT IMPLEMENTED YET
 -r remote_path (OPTIONAL): This is the remote equivalent in the Galaxy server of the base_path, in case it is mounted in a different base path. Default value is = base_path
 
 
--g GALAXY_URL: URL to connect to the Galaxy server. If not set by parameter, it can be set in a global var $GALAXY_SERVER
+-g GALAXY_URL: URL to connect to the Galaxy server. If not set by parameter, it can be set in a global var $GALAXY_URL
 -a API_KEY to run data managers. If not set by parameter, it can be set in a global var $API_KEY
 
 ## General information about the preprocessing
