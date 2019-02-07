@@ -17,7 +17,7 @@ def get_longest_transcripts_only(db,out_gff_path):
     # iterate over all features
     for gene in db.features_of_type(gene_features_names):
          if 'ID' in gene.attributes.keys():
-             print('it has ID attribute')
+             #print('it has ID attribute')
              gene_id=gene.attributes['ID']
          else:
              gene_id=gene.attributes['gene_id']
