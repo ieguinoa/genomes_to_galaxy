@@ -169,7 +169,7 @@ def main():
                 proc = subprocess.Popen( args=args, shell=False)
                 return_code = proc.wait()
                 if return_code:
-                    print("Error building genome index", file=sys.stderr)
+                    print("Error building genome index ", file=sys.stderr)
                     sys.exit( return_code )
 
             #add the genome entry in the corresponding list to create the .yaml file
@@ -186,7 +186,7 @@ def main():
             builds_gff_dict[build_id].append(gff_id) 
             out_gff_path=os.path.join(build_dir,gff_id+'.gff')    
             if not os.path.isfile(out_gff_path): ## check that the file does not exists (assume that if exists then it is the same )
-                print("Attempting to download/copy annotation file from:" + gff_uri)
+                print("Attempting to download/copy annotation file from: " + gff_uri)
                 if not get_file(gff_uri,out_gff_path):
                     print('The gff file could not be downloaded/copied') 
                     sys.exit()
@@ -208,10 +208,10 @@ def main():
                 proc = subprocess.Popen( args=args, shell=False)
                 return_code = proc.wait()
                 if return_code:
-                    print("Error extracting transcript sequences", file=sys.stderr)
+                    print("Error extracting transcript sequences ", file=sys.stderr)
                     sys.exit( return_code )
             else:
-                print("Transcriptome was already created for build-annotation ... skipping"+ gff_id  )  
+                print("Transcriptome was already created for build-annotation ... skipping for "+ gff_id  )  
         
             # Get tx2gene and representative_tx_gff
             tx2gene_out_path=os.path.join(build_dir,gff_id+'_tx2gene.tab')
@@ -264,4 +264,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+    	
